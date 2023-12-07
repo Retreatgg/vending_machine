@@ -10,6 +10,7 @@ public class AppRunner {
     private final UniversalArray<Product> products = new UniversalArrayImpl<>();
 
     private final CoinAcceptor coinAcceptor;
+    private final MoneyAcceptor moneyAcceptor;
 
     private static boolean isExit = false;
 
@@ -23,6 +24,8 @@ public class AppRunner {
                 new Pistachios(ActionLetter.G, 130)
         });
         coinAcceptor = new CoinAcceptor(100);
+        moneyAcceptor = new MoneyAcceptor(100);
+
     }
 
     public static void run() {
@@ -37,6 +40,7 @@ public class AppRunner {
         showProducts(products);
 
         print("Монет на сумму: " + coinAcceptor.getAmount());
+        print("На карте: " + moneyAcceptor.getAmount());
 
         UniversalArray<Product> allowProducts = new UniversalArrayImpl<>();
         allowProducts.addAll(getAllowedProducts().toArray());
@@ -60,8 +64,18 @@ public class AppRunner {
         print(" h - Выйти");
         String action = fromConsole().substring(0, 1);
         if ("a".equalsIgnoreCase(action)) {
-            coinAcceptor.setAmount(coinAcceptor.getAmount() + 10);
-            print("Вы пополнили баланс на 10");
+            print("Выберите что хотите пополнить: ");
+            switch (chooseMoneyOrCoin()){
+                case 1:
+                    coinAcceptor.setAmount(coinAcceptor.getAmount() + 10);
+                    print("Вы пополнили баланс монетами на 10");
+                    break;
+                case 2:
+                    moneyAcceptor.setAmount(moneyAcceptor.getAmount() + 20);
+                    print("Вы пополнили баланс деньгами на 20");
+                    break;
+                default:break;
+            }
             return;
         }
         try {
@@ -80,8 +94,26 @@ public class AppRunner {
                 chooseAction(products);
             }
         }
+    }
 
+    private int chooseMoneyOrCoin() {
+        print("1 - Монеты");
+        print("2 - Деньги");
+        int pay = 0;
+        try {
+            pay = Integer.parseInt(fromConsole());
+            if (pay >= 3 || pay <= 0) {
+                throw new Exception("Вы выбрали неверное действия");
+            }
+        } catch (NumberFormatException eg) {
+            print("Вы ввели строку! Попробуйте снова");
+            chooseMoneyOrCoin();
+        } catch (Exception e) {
+            print(e.getMessage());
+            chooseMoneyOrCoin();
+        }
 
+        return pay;
     }
 
     private void showActions(UniversalArray<Product> products) {
