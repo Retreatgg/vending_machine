@@ -13,6 +13,7 @@ public class AppRunner {
     private final MoneyAcceptor moneyAcceptor;
 
     private static boolean isExit = false;
+    private static int choosenMethodPay = 1;
 
     private AppRunner() {
         products.addAll(new Product[]{
@@ -39,8 +40,8 @@ public class AppRunner {
         print("В автомате доступны:");
         showProducts(products);
 
-        print("Монет на сумму: " + coinAcceptor.getAmount());
-        print("На карте: " + moneyAcceptor.getAmount());
+        print("Монет на сумму: " + Math.abs(coinAcceptor.getAmount()));
+        print("На карте: " + Math.abs(moneyAcceptor.getAmount()));
 
         UniversalArray<Product> allowProducts = new UniversalArrayImpl<>();
         allowProducts.addAll(getAllowedProducts().toArray());
@@ -50,9 +51,18 @@ public class AppRunner {
 
     private UniversalArray<Product> getAllowedProducts() {
         UniversalArray<Product> allowProducts = new UniversalArrayImpl<>();
-        for (int i = 0; i < products.size(); i++) {
-            if (coinAcceptor.getAmount() >= products.get(i).getPrice()) {
-                allowProducts.add(products.get(i));
+        if(choosenMethodPay == 1){
+            for (int i = 0; i < products.size(); i++) {
+                if (coinAcceptor.getAmount() >= products.get(i).getPrice()) {
+                    allowProducts.add(products.get(i));
+                }
+            }
+        }
+        if(choosenMethodPay == 2){
+            for (int i = 0; i < products.size(); i++) {
+                if (moneyAcceptor.getAmount() >= products.get(i).getPrice()) {
+                    allowProducts.add(products.get(i));
+                }
             }
         }
         return allowProducts;
@@ -64,15 +74,16 @@ public class AppRunner {
         print(" h - Выйти");
         String action = fromConsole().substring(0, 1);
         if ("a".equalsIgnoreCase(action)) {
-            print("Выберите что хотите пополнить: ");
-            print("1 - Монеты");
-            print("2 - Деньги");
-            switch (chooseMoneyOrCoin()){
+            print("Выберите способ оплаты и что хотите пополнить: ");
+            choosenMethodPay = chooseMoneyOrCoin();
+            switch (choosenMethodPay){
                 case 1:
+                    print("Вы выбрали способ оплаты монетами");
                     coinAcceptor.setAmount(coinAcceptor.getAmount() + 10);
                     print("Вы пополнили баланс монетами на 10");
                     break;
                 case 2:
+                    print("Вы выбрали способ оплаты картой");
                     moneyAcceptor.setAmount(moneyAcceptor.getAmount() + 20);
                     print("Вы пополнили баланс деньгами на 20");
                     break;
@@ -83,7 +94,7 @@ public class AppRunner {
         try {
             for (int i = 0; i < products.size(); i++) {
                 if (products.get(i).getActionLetter().equals(ActionLetter.valueOf(action.toUpperCase()))) {
-                    paymentMethod(chooseMoneyOrCoin(), i);
+                    paymentMethod(choosenMethodPay, i);
                 }
             }
         } catch (IllegalArgumentException e) {
@@ -97,6 +108,8 @@ public class AppRunner {
     }
 
     private int chooseMoneyOrCoin() {
+        print("1 - Монеты");
+        print("2 - Деньги");
         int pay = 0;
         try {
             pay = Integer.parseInt(fromConsole());
@@ -116,11 +129,11 @@ public class AppRunner {
     private void paymentMethod(int chooseMoneyOrcoin, int i){
         switch (chooseMoneyOrcoin){
             case 1:
-                coinAcceptor.setAmount(coinAcceptor.getAmount() - products.get(i).getPrice());
+                coinAcceptor.setAmount(Math.abs(coinAcceptor.getAmount() - products.get(i).getPrice()));
                 print("Вы купили " + products.get(i).getName());
                 break;
             case 2:
-                moneyAcceptor.setAmount(moneyAcceptor.getAmount() - products.get(i).getPrice());
+                 moneyAcceptor.setAmount(Math.abs((moneyAcceptor.getAmount() - products.get(i).getPrice())));
                 print("Вы купили " + products.get(i).getName());
                 break;
             default:break;

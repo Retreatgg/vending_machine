@@ -14,4 +14,5 @@ public class MoneyAcceptor {
     public void setAmount(int amount) {
         this.amount = amount;
     }
+
 }
