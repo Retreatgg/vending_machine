@@ -81,9 +81,8 @@ public class AppRunner {
         try {
             for (int i = 0; i < products.size(); i++) {
                 if (products.get(i).getActionLetter().equals(ActionLetter.valueOf(action.toUpperCase()))) {
-                    coinAcceptor.setAmount(coinAcceptor.getAmount() - products.get(i).getPrice());
-                    print("Вы купили " + products.get(i).getName());
-                    break;
+                    print("Выберите чем хотите оплачивать: ");
+                    paymentMethod(chooseMoneyOrCoin(), i);
                 }
             }
         } catch (IllegalArgumentException e) {
@@ -112,8 +111,21 @@ public class AppRunner {
             print(e.getMessage());
             chooseMoneyOrCoin();
         }
-
         return pay;
+    }
+
+    private void paymentMethod(int chooseMoneyOrcoin, int i){
+        switch (chooseMoneyOrcoin){
+            case 1:
+                coinAcceptor.setAmount(coinAcceptor.getAmount() - products.get(i).getPrice());
+                print("Вы купили " + products.get(i).getName());
+                break;
+            case 2:
+                moneyAcceptor.setAmount(moneyAcceptor.getAmount() - products.get(i).getPrice());
+                print("Вы купили " + products.get(i).getName());
+                break;
+            default:break;
+        }
     }
 
     private void showActions(UniversalArray<Product> products) {
