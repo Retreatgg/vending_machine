@@ -65,6 +65,8 @@ public class AppRunner {
         String action = fromConsole().substring(0, 1);
         if ("a".equalsIgnoreCase(action)) {
             print("Выберите что хотите пополнить: ");
+            print("1 - Монеты");
+            print("2 - Деньги");
             switch (chooseMoneyOrCoin()){
                 case 1:
                     coinAcceptor.setAmount(coinAcceptor.getAmount() + 10);
@@ -81,7 +83,6 @@ public class AppRunner {
         try {
             for (int i = 0; i < products.size(); i++) {
                 if (products.get(i).getActionLetter().equals(ActionLetter.valueOf(action.toUpperCase()))) {
-                    print("Выберите чем хотите оплачивать: ");
                     paymentMethod(chooseMoneyOrCoin(), i);
                 }
             }
@@ -96,8 +97,6 @@ public class AppRunner {
     }
 
     private int chooseMoneyOrCoin() {
-        print("1 - Монеты");
-        print("2 - Деньги");
         int pay = 0;
         try {
             pay = Integer.parseInt(fromConsole());
