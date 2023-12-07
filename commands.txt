@@ -14,6 +14,9 @@ git commit -m "#5 Changed the payment method"
 git add src/model/MoneyAcceptor.java
 git add src/AppRunner.java
 git commit -m "#6 Fixed negative balance"
+git checkout master
+git merge home_work_25
 git status
 git log
+git push
 
