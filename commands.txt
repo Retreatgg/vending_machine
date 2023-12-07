@@ -1,2 +1,19 @@
-create file commands.txt
+git clone
+git branch home_work_25
+nano commands.txt
+git add commands.txt
+git commit -m "#1 added new file commands.txt"
+git add src/model/MoneyAcceptor.java
+git commit -m "created a new class MoneyAcceptor"
+git add src/AppRunner.java
+git commit -m "#3 added the ability to top up the card"
+git add src/AppRunner.java
+git commit -m "#4 Added a method to choose payment in money or coins"
+git add src/AppRunner.java
+git commit -m "#5 Changed the payment method"
+git add src/model/MoneyAcceptor.java
+git add src/AppRunner.java
+git commit -m "#6 Fixed negative balance"
+git status
+git log
 
