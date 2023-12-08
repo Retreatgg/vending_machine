@@ -1,5 +1,8 @@
+import model.Card;
+
 public class Main {
     public static void main(String[] args) {
-        AppRunner.run();
+        Card card = new Card(4444, 494302);
+        AppRunner.run(card);
     }
 }

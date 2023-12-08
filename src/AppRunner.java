@@ -29,14 +29,14 @@ public class AppRunner {
 
     }
 
-    public static void run() {
+    public static void run(Card card) {
         AppRunner app = new AppRunner();
         while (!isExit) {
-            app.startSimulation();
+            app.startSimulation(card);
         }
     }
 
-    private void startSimulation() {
+    private void startSimulation(Card card) {
         print("В автомате доступны:");
         showProducts(products);
 
@@ -45,7 +45,7 @@ public class AppRunner {
 
         UniversalArray<Product> allowProducts = new UniversalArrayImpl<>();
         allowProducts.addAll(getAllowedProducts().toArray());
-        chooseAction(allowProducts);
+        chooseAction(allowProducts, card);
 
     }
 
@@ -68,7 +68,7 @@ public class AppRunner {
         return allowProducts;
     }
 
-    private void chooseAction(UniversalArray<Product> products) {
+    private void chooseAction(UniversalArray<Product> products, Card card) {
         print(" a - Пополнить баланс");
         showActions(products);
         print(" h - Выйти");
@@ -76,19 +76,7 @@ public class AppRunner {
         if ("a".equalsIgnoreCase(action)) {
             print("Выберите способ оплаты и что хотите пополнить: ");
             choosenMethodPay = chooseMoneyOrCoin();
-            switch (choosenMethodPay){
-                case 1:
-                    print("Вы выбрали способ оплаты монетами");
-                    coinAcceptor.setAmount(coinAcceptor.getAmount() + 10);
-                    print("Вы пополнили баланс монетами на 10");
-                    break;
-                case 2:
-                    print("Вы выбрали способ оплаты картой");
-                    moneyAcceptor.setAmount(moneyAcceptor.getAmount() + 20);
-                    print("Вы пополнили баланс деньгами на 20");
-                    break;
-                default:break;
-            }
+            payment(choosenMethodPay, card);
             return;
         }
         try {
@@ -102,8 +90,36 @@ public class AppRunner {
                 isExit = true;
             } else {
                 print("Недопустимая буква. Попрбуйте еще раз.");
-                chooseAction(products);
             }
+        }
+    }
+
+    private void payment(int choosenMethodPay, Card card){
+        switch (choosenMethodPay){
+            case 1:
+                print("Вы выбрали способ оплаты монетами");
+                coinAcceptor.setAmount(coinAcceptor.getAmount() + 10);
+                print("Вы пополнили баланс монетами на 10");
+                break;
+            case 2:
+                print("Вы выбрали способ оплаты картой");
+                try{
+                    System.out.print("Введите номер карты: ");
+                    int numberCard = Integer.parseInt(fromConsole());
+                    System.out.print("Введите пароль карты: ");
+                    int passwordCard = Integer.parseInt(fromConsole());
+                    if(numberCard == card.getNumber() && passwordCard == card.getPasswrod()) {
+                        moneyAcceptor.setAmount(moneyAcceptor.getAmount() + 20);
+                        print("Вы пополнили баланс деньгами на 20");
+                        break;
+                    } else {
+                        System.out.println("Неверный номер или пароль! Попытайтесь снова.");
+                    }
+                } catch (NumberFormatException e){
+                    System.out.println("Нельзя ввести строку");
+                    payment(choosenMethodPay, card);
+                }
+            default:break;
         }
     }
 
