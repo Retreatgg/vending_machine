@@ -16,7 +16,17 @@ git add src/AppRunner.java
 git commit -m "#6 Fixed negative balance"
 git checkout master
 git merge home_work_25
+git add src/model/Card.java
+git commit -m "#9 Created a new class Card"
 git status
 git log
-git push
+git add src/model/Card.java
+got add src/Main.java
+git add src/AppRunner.java
+git commit -m "#10 added a card and password request"
+git status
+git checkout master
+git merge home_work_25 master
+git push master
+
 
