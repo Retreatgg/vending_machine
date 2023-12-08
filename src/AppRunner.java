@@ -10,8 +10,6 @@ public class AppRunner {
     private final UniversalArray<Product> products = new UniversalArrayImpl<>();
 
     private final CoinAcceptor coinAcceptor;
-    private final MoneyAcceptor moneyAcceptor;
-
     private static boolean isExit = false;
     private static int choosenMethodPay = 1;
 
@@ -25,8 +23,6 @@ public class AppRunner {
                 new Pistachios(ActionLetter.G, 130)
         });
         coinAcceptor = new CoinAcceptor(100);
-        moneyAcceptor = new MoneyAcceptor(100);
-
     }
 
     public static void run(Card card) {
@@ -41,15 +37,15 @@ public class AppRunner {
         showProducts(products);
 
         print("Монет на сумму: " + Math.abs(coinAcceptor.getAmount()));
-        print("На карте: " + Math.abs(moneyAcceptor.getAmount()));
+        print("На карте: " + Math.abs(card.getAmount()));
 
         UniversalArray<Product> allowProducts = new UniversalArrayImpl<>();
-        allowProducts.addAll(getAllowedProducts().toArray());
+        allowProducts.addAll(getAllowedProducts(card).toArray());
         chooseAction(allowProducts, card);
 
     }
 
-    private UniversalArray<Product> getAllowedProducts() {
+    private UniversalArray<Product> getAllowedProducts(Card card) {
         UniversalArray<Product> allowProducts = new UniversalArrayImpl<>();
         if(choosenMethodPay == 1){
             for (int i = 0; i < products.size(); i++) {
@@ -60,7 +56,7 @@ public class AppRunner {
         }
         if(choosenMethodPay == 2){
             for (int i = 0; i < products.size(); i++) {
-                if (moneyAcceptor.getAmount() >= products.get(i).getPrice()) {
+                if (card.getAmount() >= products.get(i).getPrice()) {
                     allowProducts.add(products.get(i));
                 }
             }
@@ -82,7 +78,7 @@ public class AppRunner {
         try {
             for (int i = 0; i < products.size(); i++) {
                 if (products.get(i).getActionLetter().equals(ActionLetter.valueOf(action.toUpperCase()))) {
-                    paymentMethod(choosenMethodPay, i);
+                    paymentMethod(choosenMethodPay, i, card);
                 }
             }
         } catch (IllegalArgumentException e) {
@@ -109,7 +105,7 @@ public class AppRunner {
                     System.out.print("Введите пароль карты: ");
                     int passwordCard = Integer.parseInt(fromConsole());
                     if(numberCard == card.getNumber() && passwordCard == card.getPasswrod()) {
-                        moneyAcceptor.setAmount(moneyAcceptor.getAmount() + 20);
+                        card.setAmount(card.getAmount() + 20);
                         print("Вы пополнили баланс деньгами на 20");
                         break;
                     } else {
@@ -142,14 +138,14 @@ public class AppRunner {
         return pay;
     }
 
-    private void paymentMethod(int chooseMoneyOrcoin, int i){
+    private void paymentMethod(int chooseMoneyOrcoin, int i, Card card){
         switch (chooseMoneyOrcoin){
             case 1:
                 coinAcceptor.setAmount(Math.abs(coinAcceptor.getAmount() - products.get(i).getPrice()));
                 print("Вы купили " + products.get(i).getName());
                 break;
             case 2:
-                 moneyAcceptor.setAmount(Math.abs((moneyAcceptor.getAmount() - products.get(i).getPrice())));
+                 card.setAmount(Math.abs((card.getAmount() - products.get(i).getPrice())));
                 print("Вы купили " + products.get(i).getName());
                 break;
             default:break;
